@@ -1,0 +1,51 @@
+# Window Size
+WIN_W = 800
+WIN_H = 600
+CENTER_X = WIN_W / 2
+CENTER_Y = WIN_H / 2
+
+# Card Index
+CARD_ID = 0
+CARD_NAME = 1
+CARD_IMAGE = 2
+CARD_TYPE = 3
+ATTRIBUTE = 4
+ATK = 5
+DEF = 6
+EFFECT = 7
+
+# Card Positioning
+CARD_WIDTH = 200
+CARD_HEIGHT = 257
+STAT_TOP = 208
+STAT_LEFT = 127
+NAME_LEFT = 11
+NAME_TOP = 2
+IMG_TOP = 24
+IMG_LEFT = 11
+IMG_WIDTH = 178
+IMG_HEIGHT = IMG_WIDTH
+
+# Deck Size
+DECK_SIZE = 10
+DEFAULT_DECK = [2, 4, 5, 6, 7, 8, 9, 10, 11]
+
+# Hand Size
+HAND_SIZE = 3
+HAND_MAX = 6
+HAND_X = 150
+HAND_Y = 250
+CARD_DIST = 30
+
+# Buttons
+B_GAP = 30
+B_WIDTH = 100
+
+# Colors
+BLACK = (0, 0, 0, 255)
+WHITE = (255, 255, 255, 255)
+GRAY = (224, 224, 224, 255)
+BG_BLUE = (64, 64, 224, 255)
+
+# Fonts
+F_TIMES = 'Times New Roman'
