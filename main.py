@@ -1,66 +1,85 @@
 # import the pygame module, so you can use it
 import pygame
+from pygame.locals import *
+import cevent
 import constants as c
 import game_surface
 import game_state
 import game_card
 
 
-# define a main function
-def main():
-    # initialize the pygame module
-    pygame.init()
-    # load and set the logo
-    logo = pygame.image.load("logo32x32.png")
-    pygame.display.set_icon(logo)
-    pygame.display.set_caption("minimal program")
+class App(cevent.CEvent):
+    def __init__(self):
+        super(App, self).__init__()
+        self._running = True
+        self._display_surf = None
+        self._image_surf = None
+        self.background = None
+        self.clock = pygame.time.Clock()
+        self.new_game = game_state.GameState()
+        self.hand_layer = pygame.sprite.Group()
 
-    clock = pygame.time.Clock()
+    def on_init(self):
+        pygame.init()
+        self._display_surf = pygame.display.set_mode((c.WIN_W, c.WIN_H), pygame.HWSURFACE)
+        self._running = True
+        self.background = pygame.Surface((c.WIN_W, c.WIN_H))
+        self.background.fill(c.BG_BLUE)
+        self._image_surf = pygame.image.load("logo32x32.png").convert()
+        self.new_game.start_game()
 
-    # create a surface on screen that has the size of 240 x 180
-    screen = pygame.display.set_mode((c.WIN_W, c.WIN_H))
+    def on_loop(self):
+        i = 0
+        self.hand_layer.empty()
 
-    # define a variable to control the main loop
-    running = True
+        for card in self.new_game.player.hand:
+            card_sprite = game_card.CardSprite(card)
+            card_sprite.rect.x = i * card_sprite.rect.width + (i + 1) * c.CARD_DIST
+            card_sprite.rect.y = c.CARD_DIST
+            self.hand_layer.add(card_sprite)
+            i = i + 1
 
-    background = pygame.Surface((c.WIN_W, c.WIN_H))
-    background = background.convert()
-    background.fill(c.BG_BLUE)
+        self.hand_layer.update()
 
-    new_game = game_state.GameState()
-    new_game.start_game()
-
-    hand_layer = pygame.sprite.Group()
-
-    hand = new_game.player.hand
-    for card in new_game.player.hand:
-        hand_layer.add(game_card.CardSprite(card))
-
-    i = 0
-    for card in hand_layer:
-        card.rect.x =  i * card.rect.width + (i + 1) * c.CARD_DIST
-        card.rect.y = c.CARD_DIST
-        i = i + 1
-    hand_layer.draw(background)
-
-
-    # main loop
-    while running:
-
-
-        # event handling, gets all event from the eventqueue
-        for event in pygame.event.get():
-            # only do something if the event is of type QUIT
-            if event.type == pygame.QUIT:
-                # change the value to False, to exit the main loop
-                running = False
-
-        screen.blit(background, (0, 0))
+    def on_render(self):
+        self._display_surf.blit(self.background, (0, 0))
+        self.hand_layer.draw(self.background)
         pygame.display.flip()
-        clock.tick(60)
 
-# run the main function only if this module is executed as the main script
-# (if you import this as a module then nothing is executed)
+    def on_exit(self):
+        self._running = False
+
+    def on_cleanup(self):
+        pygame.quit()
+
+    def on_execute(self):
+        if self.on_init():
+            self._running = False
+
+        while self._running:
+            for event in pygame.event.get():
+                self.on_event(event)
+            self.on_loop()
+            self.on_render()
+            self.clock.tick(60)
+        self.on_cleanup()
+
+    def on_key_down(self, event):
+        if event.key == pygame.K_SPACE:
+            print('draw card')
+            self.new_game.draw_card(1)
+        elif event.key == pygame.K_ESCAPE:
+            pygame.quit()
+
+    def on_lbutton_down(self, event):
+        print('draw card')
+        self.new_game.draw_card(1)
+
+
+
+
+
+
 if __name__ == "__main__":
-    # call the main function
-    main()
+    theApp = App()
+    theApp.on_execute()

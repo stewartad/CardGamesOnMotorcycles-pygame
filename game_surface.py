@@ -5,17 +5,21 @@ import game_state as g_state
 
 
 class GameSurface(pygame.sprite.RenderClear):
-    def __init__(self):
+    def __init__(self, game_state):
         super(GameSurface, self).__init__()
 
         self.surface = pygame.Surface([c.WIN_W, c.WIN_H])
-        self.game = g_state.GameState()
-        self.hand = pygame.sprite.Group()
+        self.game = game_state
+        self.player = self.game.player
+        self.hand_group = pygame.sprite.Group()
 
         self.update()
 
+    def clear_hand(self, surface):
+        self.player.hand.clear(self.surface, pygame.Surface([c.WIN_W, c.WIN_H]))
+
     def update(self, *args):
-        self.hand.clear(self.surface, pygame.Surface([c.WIN_W, c.WIN_H]))
+
         for card in self.game.player.hand:
             self.hand.add(g_card.CardSprite(card))
         self.hand.draw(self.surface)

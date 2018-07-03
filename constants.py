@@ -1,6 +1,6 @@
 # Window Size
-WIN_W = 800
-WIN_H = 600
+WIN_W = 1600
+WIN_H = 900
 CENTER_X = WIN_W / 2
 CENTER_Y = WIN_H / 2
 

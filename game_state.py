@@ -8,10 +8,10 @@ class GameState:
     def __init__(self):
         self.player = Player("Yugi")
 
-    def draw_card(self, n, player):
+    def draw_card(self, n):
         if len(self.player.hand) <= c.HAND_MAX - n:
             for i in range(n):
-                player.hand.append(player.deck.draw_card())
+                self.player.hand.append(self.player.deck.draw_card())
 
     def reset_game(self):
         self.player.hand.clear()
@@ -20,7 +20,7 @@ class GameState:
 
     def start_game(self):
         self.player.deck.shuffle()
-        self.draw_card(c.HAND_SIZE, self.player)
+        self.draw_card(c.HAND_SIZE)
 
 
 class Player:
