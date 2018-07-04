@@ -26,14 +26,15 @@ class CardSprite(sprite.Sprite):
         self.image = pygame.Surface([c.CARD_WIDTH, c.CARD_HEIGHT])
         self.image.fill(c.WHITE)
         self.rect = self.image.get_rect()
+        self._font = c.F_TIMES
 
-        name_font = pygame.font.SysFont("comicsansms", 14)
-        stat_font = pygame.font.SysFont("comicsansms", 12)
+        name_font = pygame.font.SysFont(self._font, 14)
+        stat_font = pygame.font.SysFont(self._font, 12)
 
-        self.card_name = name_font.render(self.card.name, True, c.BLACK, c.GRAY)
+        self.card_name = name_font.render(self.card.name, True, c.BLACK)
         self.card_image = CardImage(self.card.id).image
-        self.card_atk = stat_font.render(str(self.card.attack), True, c.BLACK, c.GRAY)
-        self.card_def = stat_font.render(str(self.card.defense), True, c.BLACK, c.GRAY)
+        self.card_atk = stat_font.render(str(self.card.attack), True, c.BLACK)
+        self.card_def = stat_font.render(str(self.card.defense), True, c.BLACK)
 
         self.image.blit(self.card_name, (c.NAME_LEFT, c.NAME_TOP))
         self.image.blit(self.card_image, (c.IMG_LEFT, c.IMG_TOP))
@@ -41,20 +42,51 @@ class CardSprite(sprite.Sprite):
         self.image.blit(self.card_def, (c.STAT_LEFT, c.STAT_TOP + 20))
 
 
-class GameButton(sprite.Sprite):
-    def __init__(self, text, x, y):
-        super(GameButton, self).__init__()
-        self.image = pygame.Surface((c.BUTTON_W, c.BUTTON_H))
-        self.image.fill(c.BUTTON_COLOR)
+class GameLabel(sprite.Sprite):
+    def __init__(self, text, x, y, size=12):
+        super(GameLabel, self).__init__()
+        self._font = pygame.font.SysFont(c.F_TIMES, size)
+        self.text = text
+        self.label_text = self._font.render(self.text, True, c.BLACK)
+        self.label_w = self._font.size(self.text)[0]
+        self.label_h = self._font.size(self.text)[1]
+        self.label_center_x = self.label_w / 2
+        self.label_center_y = self.label_h / 2
+
+        self.image = pygame.Surface((self.label_w, self.label_h))
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        self.center_x = self.rect.width / 2
+        self.center_y = self.rect.height / 2
 
-        self._font = pygame.font.SysFont("comicsansms", 12)
+        self.update()
+
+    def update_text(self, text):
         self.text = text
+        self.label_text = self._font.render(self.text, True, c.BLACK)
 
-        self.button_text = self._font.render(self.text, True, c.BLACK)
-        self.image.blit(self.button_text, (0, 0))
+    def update(self, *args):
+        self.image.fill(c.BG_BLUE)
+
+        self.image.blit(self.label_text, (self.center_x - self.label_center_x, self.center_y - self.label_center_y))
+
+
+class GameButton(GameLabel):
+    def __init__(self, text, x, y):
+        super(GameButton, self).__init__(text, x, y, c.BUTTON_SIZE)
+        self.image = pygame.Surface((c.BUTTON_W, c.BUTTON_H))
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.center_x = self.rect.width / 2
+        self.center_y = self.rect.height / 2
+        self.update()
+
+    def update(self, *args):
+        self.image.fill(c.BUTTON_COLOR)
+
+        self.image.blit(self.label_text, (self.center_x - self.label_center_x, self.center_y - self.label_center_y))
 
 
 class Cursor(sprite.Sprite):
