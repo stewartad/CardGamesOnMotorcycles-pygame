@@ -1,9 +1,9 @@
 # import the pygame module, so you can use it
 import pygame
+import copy
 from pygame.locals import *
 import cevent
 import constants as c
-import game_surface
 import game_state
 import game_card
 
@@ -17,21 +17,17 @@ class App(cevent.CEvent):
         self.background = None
         self.clock = pygame.time.Clock()
         self.new_game = game_state.GameState()
+        self.draw_b = None
+        self.reset_b = None
+        self.exit_b = None
         self.hand_layer = pygame.sprite.Group()
+        self.game_font = None
+        self.buttons = pygame.sprite.Group()
+        self.card_preview = pygame.sprite.Group()
 
-    def on_init(self):
-        pygame.init()
-        self._display_surf = pygame.display.set_mode((c.WIN_W, c.WIN_H), pygame.HWSURFACE)
-        self._running = True
-        self.background = pygame.Surface((c.WIN_W, c.WIN_H))
-        self.background.fill(c.BG_BLUE)
-        self._image_surf = pygame.image.load("logo32x32.png").convert()
-        self.new_game.start_game()
-
-    def on_loop(self):
+    def clear_hand(self):
         i = 0
         self.hand_layer.empty()
-
         for card in self.new_game.player.hand:
             card_sprite = game_card.CardSprite(card)
             card_sprite.rect.x = i * card_sprite.rect.width + (i + 1) * c.CARD_DIST
@@ -39,11 +35,37 @@ class App(cevent.CEvent):
             self.hand_layer.add(card_sprite)
             i = i + 1
 
+    def clear_callback(self, surf, rect):
+        surf.fill(c.BG_BLUE, rect)
+        return surf
+
+    def on_init(self):
+        pygame.init()
+        self.game_font = pygame.font.SysFont("comicsansms", 18)
+        self._display_surf = pygame.display.set_mode((c.WIN_W, c.WIN_H), pygame.HWSURFACE)
+        self._running = True
+        self.background = pygame.Surface((c.WIN_W, c.WIN_H))
+        self.background.fill(c.BG_BLUE)
+        self._image_surf = pygame.image.load("logo32x32.png").convert()
+        self.new_game.start_game()
+        self.draw_b = game_card.GameButton('Draw', 100, 800)
+        self.reset_b = game_card.GameButton('Reset', 250, 800)
+        self.exit_b = game_card.GameButton('Exit', 400, 800)
+        self.buttons.add(self.draw_b, self.reset_b, self.exit_b)
+
+
+    def on_loop(self):
+        self.clear_hand()
         self.hand_layer.update()
+        self.draw_b.update()
 
     def on_render(self):
         self._display_surf.blit(self.background, (0, 0))
+        gs = 'Hand: {}    Deck: {}'.format(len(self.new_game.player.hand), len(self.new_game.player.deck))
+        self._display_surf.blit(self.game_font.render(gs,True, c.BLACK), (c.CENTER_X, 800))
         self.hand_layer.draw(self.background)
+        self.buttons.draw(self.background)
+        self.card_preview.draw(self.background)
         pygame.display.flip()
 
     def on_exit(self):
@@ -66,14 +88,37 @@ class App(cevent.CEvent):
 
     def on_key_down(self, event):
         if event.key == pygame.K_SPACE:
-            print('draw card')
-            self.new_game.draw_card(1)
+            pass
         elif event.key == pygame.K_ESCAPE:
-            pygame.quit()
+            exit()
+
+    def on_mouse_move(self, event):
+        x = event.pos[0]
+        y = event.pos[1]
+        cursor = game_card.Cursor(x, y)
+        hover_card = pygame.sprite.spritecollide(cursor, self.hand_layer, False)
+        if hover_card:
+            new_card = game_state.Card(hover_card[0].card.get_info())
+            new_card_sprite = game_card.CardSprite(new_card)
+            new_card_sprite.rect.x = 1305
+            new_card_sprite.rect.y = 485
+            self.card_preview.add(new_card_sprite)
 
     def on_lbutton_down(self, event):
-        print('draw card')
-        self.new_game.draw_card(1)
+        print(event.pos)
+        x = event.pos[0]
+        y = event.pos[1]
+        cursor = game_card.Cursor(x, y)
+        clicked_button = pygame.sprite.spritecollide(cursor, self.buttons, False)
+        if clicked_button:
+            if clicked_button[0].text.lower() == 'draw':
+                self.new_game.draw_card(1)
+            elif clicked_button[0].text.lower() == 'reset':
+                self.new_game.reset_game()
+                self.hand_layer.clear(self.background, self.clear_callback(self.background, self.background.get_rect()))
+                self.clear_hand()
+            elif clicked_button[0].text.lower() == 'exit':
+                exit()
 
 
 

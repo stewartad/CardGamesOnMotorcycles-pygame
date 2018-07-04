@@ -3,29 +3,6 @@ import pygame
 import pygame.sprite as sprite
 
 
-class Card:
-    def __init__(self, card_info):
-        self.id = int(card_info[c.CARD_ID])
-        self.name = card_info[c.CARD_NAME]
-        self.image = card_info[c.CARD_IMAGE]
-        self.card_type = card_info[c.CARD_TYPE]
-        self.attribute = card_info[c.ATTRIBUTE]
-        self.attack = card_info[c.ATK]
-        self.defense = card_info[c.DEF]
-        self.EFFECT = card_info[c.EFFECT]
-
-    def __str__(self):
-        return str(self.get_game_info().values())
-
-    def get_game_info(self):
-        return {'name': self.name,
-                'image': self.image,
-                'card type': self.card_type,
-                'attribute': self.attribute,
-                'attack': str(self.attack),
-                'defense': str(self.defense)}
-
-
 class CardBackground(sprite.Sprite):
     def __init__(self):
         super(CardBackground, self).__init__()
@@ -43,7 +20,7 @@ class CardImage(sprite.Sprite):
 
 class CardSprite(sprite.Sprite):
     def __init__(self, card_obj):
-        sprite.Sprite.__init__(self)
+        super(CardSprite, self).__init__()
 
         self.card = card_obj
         self.image = pygame.Surface([c.CARD_WIDTH, c.CARD_HEIGHT])
@@ -62,3 +39,28 @@ class CardSprite(sprite.Sprite):
         self.image.blit(self.card_image, (c.IMG_LEFT, c.IMG_TOP))
         self.image.blit(self.card_atk, (c.STAT_LEFT, c.STAT_TOP))
         self.image.blit(self.card_def, (c.STAT_LEFT, c.STAT_TOP + 20))
+
+
+class GameButton(sprite.Sprite):
+    def __init__(self, text, x, y):
+        super(GameButton, self).__init__()
+        self.image = pygame.Surface((c.BUTTON_W, c.BUTTON_H))
+        self.image.fill(c.BUTTON_COLOR)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+        self._font = pygame.font.SysFont("comicsansms", 12)
+        self.text = text
+
+        self.button_text = self._font.render(self.text, True, c.BLACK)
+        self.image.blit(self.button_text, (0, 0))
+
+
+class Cursor(sprite.Sprite):
+    def __init__(self, x, y):
+        super(Cursor, self).__init__()
+        self.image = pygame.Surface((1, 1))
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y

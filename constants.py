@@ -4,6 +4,13 @@ WIN_H = 900
 CENTER_X = WIN_W / 2
 CENTER_Y = WIN_H / 2
 
+# Colors
+BLACK = (0, 0, 0, 255)
+WHITE = (255, 255, 255, 255)
+GRAY = (224, 224, 224, 255)
+BG_BLUE = (64, 64, 224, 255)
+PINK = (236,8,223)
+
 # Card Index
 CARD_ID = 0
 CARD_NAME = 1
@@ -39,13 +46,11 @@ CARD_DIST = 30
 
 # Buttons
 B_GAP = 30
-B_WIDTH = 100
+BUTTON_W = 100
+BUTTON_H = 50
+BUTTON_COLOR = PINK
 
-# Colors
-BLACK = (0, 0, 0, 255)
-WHITE = (255, 255, 255, 255)
-GRAY = (224, 224, 224, 255)
-BG_BLUE = (64, 64, 224, 255)
+
 
 # Fonts
 F_TIMES = 'Times New Roman'
