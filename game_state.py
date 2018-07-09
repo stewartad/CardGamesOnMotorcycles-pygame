@@ -1,12 +1,15 @@
 import constants as c
 import random
-import game_ui as card
 import parse
+import actions
 
 
 class GameState:
     def __init__(self):
         self.player = Player("Yugi")
+        self.phases = [Phase('Draw Phase', 'draw'), Phase('Main Phase', 'summon')]
+        self.curr_phase = self.phases[0]
+        self.turn_stack = []
 
     def draw_card(self, n):
         if len(self.player.hand) <= c.HAND_MAX - n and len(self.player.deck) != 0:
@@ -22,11 +25,31 @@ class GameState:
         self.player.deck.shuffle()
         self.draw_card(c.HAND_SIZE)
 
+    def receive_action(self, action):
+        if action.name in self.curr_phase.allowed_actions and action.validate():
+            self.turn_stack.append(action)
+
+    def pass_phase(self):
+        self.curr_phase = self.curr_phase + 1
+
+    def update(self):
+        while self.turn_stack:
+            action = self.turn_stack.pop(0)
+            action.validate()
+            action.action()
+
+
+class Phase:
+    def __init__(self, name, *args):
+        self.name = name
+        self.allowed_actions = list(args)
+
 
 class Player:
     def __init__(self, name):
         self.name = name
         self.hand = []
+        self.field = []
         self.deck = Deck(c.DEFAULT_DECK)
 
 

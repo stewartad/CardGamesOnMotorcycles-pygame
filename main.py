@@ -6,6 +6,7 @@ import cevent
 import constants as c
 import game_state
 import game_ui
+import actions
 
 
 class App(cevent.CEvent):
@@ -52,7 +53,7 @@ class App(cevent.CEvent):
 
     def check_game_button(self, button):
         if button.text.lower() == 'draw':
-            self.new_game.draw_card(1)
+            self.new_game.receive_action(actions.DrawAction(self.new_game.player, 1))
         elif button.text.lower() == 'reset':
             self.new_game.reset_game()
             self.card_preview.empty()
@@ -60,6 +61,9 @@ class App(cevent.CEvent):
             self.clear_hand()
         elif button.text.lower() == 'exit':
             exit()
+
+    def check_play(self, card):
+        pass
 
     def on_init(self):
         pygame.init()
@@ -78,6 +82,7 @@ class App(cevent.CEvent):
         self.buttons.add(self.draw_b, self.reset_b, self.exit_b)
 
     def on_loop(self):
+        self.new_game.update()
         self.clear_hand()
         self.hand_layer.update()
         self.buttons.update()
