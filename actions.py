@@ -4,7 +4,6 @@ import constants as c
 class Action:
     def __init__(self, name):
         self.name = name
-        self.valid = False
 
     def action(self):
         pass
@@ -14,26 +13,31 @@ class Action:
 
 
 class DrawAction(Action):
-    def __init__(self, player, n):
+    def __init__(self, player):
         super(DrawAction, self).__init__('draw')
         self.player = player
-        self.n = n
 
     def action(self):
-        for i in range(self.n):
-            self.player.hand.append(self.player.deck.draw_card())
+        self.player.hand.append(self.player.deck.draw_card())
+        self.player.draw()
 
     def validate(self):
-        if len(self.player.hand) <= c.HAND_MAX - self.n and len(self.player.deck) != 0:
-            self.valid = True
-        return self.valid
+        if self.player.check_draw():
+            return True
 
 
 class SummonAction(Action):
-    def __init__(self, player_card, player_field):
+    def __init__(self, player_card, player):
         super(SummonAction, self).__init__('summon')
         self.card = player_card
-        self.field = player_field
+        self.player = player
 
     def action(self):
-        self.field.append(self.card)
+        self.player.hand.remove(self.card)
+        self.player.summon()
+        self.player.field.append(self.card)
+
+    def validate(self):
+        if self.player.check_summon():
+            return True
+

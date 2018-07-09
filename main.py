@@ -21,17 +21,19 @@ class App(cevent.CEvent):
         self.new_game = game_state.GameState()
 
         self.draw_b = None
+        self.phase_b = None
         self.reset_b = None
         self.exit_b = None
 
         self.hand_layer = pygame.sprite.Group()
+        self.field_layer = pygame.sprite.Group()
 
         self.game_font = None
 
         self.buttons = pygame.sprite.Group()
         self.card_preview = pygame.sprite.GroupSingle()
 
-    def clear_hand(self):
+    def refresh_hand(self):
         i = 0
         self.hand_layer.empty()
         for card in self.new_game.player.hand:
@@ -39,6 +41,15 @@ class App(cevent.CEvent):
             card_sprite.rect.x = i * card_sprite.rect.width + (i + 1) * c.CARD_GAP
             card_sprite.rect.y = c.CARD_GAP
             self.hand_layer.add(card_sprite)
+            i = i + 1
+
+    def refresh_field(self):
+        i = 0
+        for card in self.new_game.player.field:
+            card_sprite = game_ui.CardSprite(card)
+            card_sprite.rect.x = i * card_sprite.rect.width + (i + 1) * c.CARD_GAP
+            card_sprite.rect.y = 250
+            self.field_layer.add(card_sprite)
             i = i + 1
 
     def clear_callback(self, surf, rect):
@@ -53,17 +64,19 @@ class App(cevent.CEvent):
 
     def check_game_button(self, button):
         if button.text.lower() == 'draw':
-            self.new_game.receive_action(actions.DrawAction(self.new_game.player, 1))
+            self.new_game.receive_action(actions.DrawAction(self.new_game.player))
+        elif button.text.lower() == 'next phase':
+            self.new_game.pass_phase()
         elif button.text.lower() == 'reset':
             self.new_game.reset_game()
             self.card_preview.empty()
             self.hand_layer.clear(self.background, self.clear_callback(self.background, self.background.get_rect()))
-            self.clear_hand()
+            self.refresh_hand()
         elif button.text.lower() == 'exit':
             exit()
 
-    def check_play(self, card):
-        pass
+    def check_play(self, card_sprite):
+        self.new_game.receive_action(actions.SummonAction(card_sprite.card, self.new_game.player))
 
     def on_init(self):
         pygame.init()
@@ -77,21 +90,25 @@ class App(cevent.CEvent):
         self.new_game.start_game()
 
         self.draw_b = game_ui.GameButton('Draw', 100, 800)
-        self.reset_b = game_ui.GameButton('Reset', 250, 800)
-        self.exit_b = game_ui.GameButton('Exit', 400, 800)
-        self.buttons.add(self.draw_b, self.reset_b, self.exit_b)
+        self.phase_b = game_ui.GameButton('Next Phase', 250, 800)
+        self.reset_b = game_ui.GameButton('Reset', 400, 800)
+        self.exit_b = game_ui.GameButton('Exit', 550, 800)
+        self.buttons.add(self.draw_b, self.phase_b, self.reset_b, self.exit_b)
 
     def on_loop(self):
         self.new_game.update()
-        self.clear_hand()
+        self.refresh_hand()
+        self.refresh_field()
         self.hand_layer.update()
         self.buttons.update()
 
     def on_render(self):
         self._display_surf.blit(self.background, (0, 0))
-        gs = 'Hand: {}    Deck: {}'.format(len(self.new_game.player.hand), len(self.new_game.player.deck))
+        gs = 'Hand: {}    Deck: {}    {}'.format(len(self.new_game.player.hand), len(self.new_game.player.deck),
+                                                 self.new_game.curr_phase.name)
         self._display_surf.blit(self.game_font.render(gs, True, c.BLACK), (c.CENTER_X, 800))
         self.hand_layer.draw(self.background)
+        self.field_layer.draw(self.background)
         self.buttons.draw(self.background)
         self.card_preview.draw(self.background)
         pygame.display.flip()
@@ -139,6 +156,8 @@ class App(cevent.CEvent):
             self.check_game_button(clicked_button[0])
         elif clicked_card:
             print(str(clicked_card[0].card))
+            self.check_play(clicked_card[0])
+
 
 
 if __name__ == "__main__":

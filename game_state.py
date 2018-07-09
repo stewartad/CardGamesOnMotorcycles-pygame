@@ -8,7 +8,9 @@ class GameState:
     def __init__(self):
         self.player = Player("Yugi")
         self.phases = [Phase('Draw Phase', 'draw'), Phase('Main Phase', 'summon')]
-        self.curr_phase = self.phases[0]
+        self.phase_index = 0
+        self.curr_phase = self.phases[self.phase_index]
+
         self.turn_stack = []
 
     def draw_card(self, n):
@@ -30,12 +32,17 @@ class GameState:
             self.turn_stack.append(action)
 
     def pass_phase(self):
-        self.curr_phase = self.curr_phase + 1
+        self.phase_index = self.phase_index + 1
+
+    def new_turn(self):
+        self.phase_index = 0
+        self.player.can_summon = True
+        self.player.can_draw = True
 
     def update(self):
+        self.curr_phase = self.phases[self.phase_index]
         while self.turn_stack:
             action = self.turn_stack.pop(0)
-            action.validate()
             action.action()
 
 
@@ -51,6 +58,30 @@ class Player:
         self.hand = []
         self.field = []
         self.deck = Deck(c.DEFAULT_DECK)
+        self.can_draw = True
+        self.can_summon = True
+
+    def check_draw(self):
+        if len(self.hand) <= c.HAND_MAX - 1 and len(self.deck) != 0 and self.can_draw:
+            self.can_draw = True
+        else:
+            self.can_draw = False
+        return self.can_draw
+
+    def draw(self):
+        if self.can_draw:
+            self.can_draw = False
+
+    def check_summon(self):
+        if len(self.field) < c.FIELD_MAX and self.can_summon:
+            self.can_summon = True
+        else:
+            self.can_summon = False
+        return self.can_summon
+
+    def summon(self):
+        if self.can_summon:
+            self.can_summon = False
 
 
 class Deck:

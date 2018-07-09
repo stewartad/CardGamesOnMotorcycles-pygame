@@ -63,6 +63,9 @@ HAND_X = 150
 HAND_Y = 250
 CARD_GAP = 15
 
+# Field Size
+FIELD_MAX = 5
+
 # Buttons
 B_GAP = 30
 BUTTON_W = 100

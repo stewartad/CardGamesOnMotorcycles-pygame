@@ -56,6 +56,7 @@ class CardSpriteSmall(CardSprite):
         self.rect = self.image.get_rect()
         self.card_image = pygame.transform.scale(self.card_image, (c.S_IMG_WIDTH, c.S_IMG_HEIGHT))
         name_font = pygame.font.SysFont(self._font, 10)
+        self.card_name = name_font.render(self.card.name, True, c.BLACK)
 
         self.image.blit(self.card_name, (c.S_NAME_LEFT, c.S_NAME_TOP))
         self.image.blit(self.card_image, (c.S_IMG_LEFT, c.S_IMG_TOP))
