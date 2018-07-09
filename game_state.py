@@ -1,6 +1,6 @@
 import constants as c
 import random
-import game_card as card
+import game_ui as card
 import parse
 
 
