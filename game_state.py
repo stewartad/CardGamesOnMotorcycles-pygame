@@ -9,7 +9,7 @@ class GameState:
         self.player = Player("Yugi")
 
     def draw_card(self, n):
-        if len(self.player.hand) <= c.HAND_MAX - n:
+        if len(self.player.hand) <= c.HAND_MAX - n and len(self.player.deck) != 0:
             for i in range(n):
                 self.player.hand.append(self.player.deck.draw_card())
 

@@ -58,7 +58,7 @@ DEFAULT_DECK = [2, 4, 5, 6, 7, 8, 9, 10, 11]
 
 # Hand Size
 HAND_SIZE = 3
-HAND_MAX = 6
+HAND_MAX = 10
 HAND_X = 150
 HAND_Y = 250
 CARD_GAP = 15

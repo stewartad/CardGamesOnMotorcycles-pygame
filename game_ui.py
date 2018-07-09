@@ -39,8 +39,9 @@ class CardSprite(sprite.Sprite):
 
         self.image.blit(self.card_name, (c.NAME_LEFT, c.NAME_TOP))
         self.image.blit(self.card_image, (c.IMG_LEFT, c.IMG_TOP))
-        self.image.blit(self.card_atk, (c.STAT_LEFT, c.STAT_TOP))
-        self.image.blit(self.card_def, (c.STAT_LEFT, c.STAT_TOP + 20))
+        if self.card.card_type == 'MONSTER':
+            self.image.blit(self.card_atk, (c.STAT_LEFT, c.STAT_TOP))
+            self.image.blit(self.card_def, (c.STAT_LEFT, c.STAT_TOP + 20))
 
     def swap_size(self):
         return CardSpriteSmall(self.card)
@@ -58,8 +59,9 @@ class CardSpriteSmall(CardSprite):
 
         self.image.blit(self.card_name, (c.S_NAME_LEFT, c.S_NAME_TOP))
         self.image.blit(self.card_image, (c.S_IMG_LEFT, c.S_IMG_TOP))
-        self.image.blit(self.card_atk, (c.S_STAT_LEFT, c.S_STAT_TOP))
-        self.image.blit(self.card_def, (c.S_STAT_LEFT + 50, c.S_STAT_TOP))
+        if self.card.card_type == 'MONSTER':
+            self.image.blit(self.card_atk, (c.S_STAT_LEFT, c.S_STAT_TOP))
+            self.image.blit(self.card_def, (c.S_STAT_LEFT + 50, c.S_STAT_TOP))
 
     def swap_size(self):
         return CardSprite(self.card)
