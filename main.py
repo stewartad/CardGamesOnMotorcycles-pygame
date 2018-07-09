@@ -45,6 +45,7 @@ class App(cevent.CEvent):
 
     def refresh_field(self):
         i = 0
+        self.field_layer.empty()
         for card in self.new_game.player.field:
             card_sprite = game_ui.CardSprite(card)
             card_sprite.rect.x = i * card_sprite.rect.width + (i + 1) * c.CARD_GAP
@@ -71,7 +72,9 @@ class App(cevent.CEvent):
             self.new_game.reset_game()
             self.card_preview.empty()
             self.hand_layer.clear(self.background, self.clear_callback(self.background, self.background.get_rect()))
+            self.field_layer.clear(self.background, self.clear_callback(self.background, self.background.get_rect()))
             self.refresh_hand()
+            self.refresh_field()
         elif button.text.lower() == 'exit':
             exit()
 
