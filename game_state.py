@@ -7,10 +7,9 @@ import actions
 class GameState:
     def __init__(self):
         self.player = Player("Yugi")
-        self.phases = [Phase('Draw Phase', 'draw'), Phase('Main Phase', 'summon')]
+        self.phases = [Phase('Draw Phase', 'draw'), Phase('Main Phase', 'summon'), Phase('End Phase', 'end')]
         self.phase_index = 0
         self.curr_phase = self.phases[self.phase_index]
-
         self.turn_stack = []
 
     def draw_card(self, n):
@@ -20,21 +19,29 @@ class GameState:
 
     def reset_game(self):
         self.player.hand.clear()
+        self.player.field.clear()
         self.player.deck.reset()
         self.start_game()
 
     def start_game(self):
         self.player.deck.shuffle()
         self.draw_card(c.HAND_SIZE)
+        self.new_turn()
 
     def receive_action(self, action):
+        # Method to add action to the turn stack to be executed later
+        # Action validation will be extended to implement player priority, probably by passing game state
         if action.name in self.curr_phase.allowed_actions and action.validate():
             self.turn_stack.append(action)
 
     def pass_phase(self):
+        # Increment phase count
         self.phase_index = self.phase_index + 1
+        if self.curr_phase.name == 'End Phase':
+            self.new_turn()
 
     def new_turn(self):
+        # reset phase counter and once per turn actions
         self.phase_index = 0
         self.player.can_summon = True
         self.player.can_draw = True
@@ -47,6 +54,7 @@ class GameState:
 
 
 class Phase:
+    # Keeps track of action types that are allowed in each phase of the turn
     def __init__(self, name, *args):
         self.name = name
         self.allowed_actions = list(args)
@@ -72,16 +80,27 @@ class Player:
         if self.can_draw:
             self.can_draw = False
 
+    def revoke_summon(self):
+        self.can_summon = False
+
     def check_summon(self):
         if len(self.field) < c.FIELD_MAX and self.can_summon:
-            self.can_summon = True
+            return True
         else:
-            self.can_summon = False
-        return self.can_summon
+            self.revoke_summon()
+            return False
 
-    def summon(self):
+    def summon(self, card):
         if self.can_summon:
             self.can_summon = False
+            self.hand.remove(self.check_hand(card))
+            self.field.append(card)
+
+    def check_hand(self, card):
+        return next((x for x in self.hand if x.id == card.id), None)
+
+    def check_field(self, card):
+        return next((x for x in self.field if x.id == card.id), None)
 
 
 class Deck:

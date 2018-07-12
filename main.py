@@ -35,8 +35,13 @@ class App(cevent.CEvent):
 
     def refresh_hand(self):
         i = 0
+        player_hand = self.new_game.player.hand
+        if len(self.hand_layer) > len(player_hand):
+            for sprite in self.hand_layer.sprites():
+                if not self.new_game.player.check_hand(sprite.card):
+                    self.clear_layer(self.hand_layer, sprite.rect)
         self.hand_layer.empty()
-        for card in self.new_game.player.hand:
+        for card in player_hand:
             card_sprite = game_ui.CardSpriteSmall(card)
             card_sprite.rect.x = i * card_sprite.rect.width + (i + 1) * c.CARD_GAP
             card_sprite.rect.y = c.CARD_GAP
@@ -45,6 +50,10 @@ class App(cevent.CEvent):
 
     def refresh_field(self):
         i = 0
+        if len(self.field_layer) > len(self.new_game.player.field):
+            for sprite in self.field_layer.sprites():
+                if not self.new_game.player.check_field(sprite.card):
+                    self.clear_layer(self.field_layer, sprite.rect)
         self.field_layer.empty()
         for card in self.new_game.player.field:
             card_sprite = game_ui.CardSprite(card)
@@ -56,6 +65,9 @@ class App(cevent.CEvent):
     def clear_callback(self, surf, rect):
         surf.fill(c.BG_BLUE, rect)
         return surf
+
+    def clear_layer(self, layer, rect):
+        layer.clear(self.background, self.clear_callback(self.background, rect))
 
     def create_card_preview(self, card_sprite):
         curr_card_sprite = self.card_preview.sprite
@@ -71,15 +83,15 @@ class App(cevent.CEvent):
         elif button.text.lower() == 'reset':
             self.new_game.reset_game()
             self.card_preview.empty()
-            self.hand_layer.clear(self.background, self.clear_callback(self.background, self.background.get_rect()))
-            self.field_layer.clear(self.background, self.clear_callback(self.background, self.background.get_rect()))
+            #self.clear_layer(self.hand_layer, self.background.get_rect())
+            #self.clear_layer(self.field_layer, self.background.get_rect())
             self.refresh_hand()
             self.refresh_field()
         elif button.text.lower() == 'exit':
             exit()
 
-    def check_play(self, card_sprite):
-        self.new_game.receive_action(actions.SummonAction(card_sprite.card, self.new_game.player))
+    def send_action(self, action):
+        self.new_game.receive_action(action)
 
     def on_init(self):
         pygame.init()
@@ -103,6 +115,7 @@ class App(cevent.CEvent):
         self.refresh_hand()
         self.refresh_field()
         self.hand_layer.update()
+        self.field_layer.update()
         self.buttons.update()
 
     def on_render(self):
@@ -158,9 +171,7 @@ class App(cevent.CEvent):
         if clicked_button:
             self.check_game_button(clicked_button[0])
         elif clicked_card:
-            print(str(clicked_card[0].card))
-            self.check_play(clicked_card[0])
-
+            self.send_action(actions.SummonAction(clicked_card[0].card, self.new_game.player))
 
 
 if __name__ == "__main__":

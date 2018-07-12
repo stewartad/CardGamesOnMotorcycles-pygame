@@ -33,11 +33,16 @@ class SummonAction(Action):
         self.player = player
 
     def action(self):
-        self.player.hand.remove(self.card)
-        self.player.summon()
-        self.player.field.append(self.card)
+        self.player.summon(self.card)
 
     def validate(self):
         if self.player.check_summon():
             return True
 
+
+class EndAction(Action):
+    def __init__(self):
+        super(EndAction, self).__init__('end')
+
+    def action(self):
+        pass

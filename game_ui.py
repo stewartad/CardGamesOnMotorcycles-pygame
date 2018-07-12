@@ -37,14 +37,21 @@ class CardSprite(sprite.Sprite):
         self.card_atk = stat_font.render(str(self.card.attack), True, c.BLACK)
         self.card_def = stat_font.render(str(self.card.defense), True, c.BLACK)
 
+        self.draw_card()
+
+    def swap_size(self):
+        return CardSpriteSmall(self.card)
+
+    def draw_card(self):
         self.image.blit(self.card_name, (c.NAME_LEFT, c.NAME_TOP))
         self.image.blit(self.card_image, (c.IMG_LEFT, c.IMG_TOP))
         if self.card.card_type == 'MONSTER':
             self.image.blit(self.card_atk, (c.STAT_LEFT, c.STAT_TOP))
             self.image.blit(self.card_def, (c.STAT_LEFT, c.STAT_TOP + 20))
 
-    def swap_size(self):
-        return CardSpriteSmall(self.card)
+    def update(self, *args):
+        self.image.fill(c.WHITE)
+        self.draw_card()
 
 
 class CardSpriteSmall(CardSprite):
@@ -58,6 +65,9 @@ class CardSpriteSmall(CardSprite):
         name_font = pygame.font.SysFont(self._font, 10)
         self.card_name = name_font.render(self.card.name, True, c.BLACK)
 
+        self.draw_card()
+
+    def draw_card(self):
         self.image.blit(self.card_name, (c.S_NAME_LEFT, c.S_NAME_TOP))
         self.image.blit(self.card_image, (c.S_IMG_LEFT, c.S_IMG_TOP))
         if self.card.card_type == 'MONSTER':
