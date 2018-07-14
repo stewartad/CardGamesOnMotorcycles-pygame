@@ -11,6 +11,7 @@ class GameState:
         self.phase_index = 0
         self.curr_phase = self.phases[self.phase_index]
         self.turn_stack = []
+        self.turn_count = 0
 
     def draw_card(self, n):
         if len(self.player.hand) <= c.HAND_MAX - n and len(self.player.deck) != 0:
@@ -42,6 +43,7 @@ class GameState:
 
     def new_turn(self):
         # reset phase counter and once per turn actions
+        self.turn_count = self.turn_count + 1
         self.phase_index = 0
         self.player.can_summon = True
         self.player.can_draw = True

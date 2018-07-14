@@ -120,8 +120,10 @@ class App(cevent.CEvent):
 
     def on_render(self):
         self._display_surf.blit(self.background, (0, 0))
-        gs = 'Hand: {}    Deck: {}    {}'.format(len(self.new_game.player.hand), len(self.new_game.player.deck),
-                                                 self.new_game.curr_phase.name)
+        gs = 'Hand: {}    Deck: {}    Turn: {}    {}'.format(len(self.new_game.player.hand),
+                                                             len(self.new_game.player.deck),
+                                                             self.new_game.turn_count,
+                                                             self.new_game.curr_phase.name)
         self._display_surf.blit(self.game_font.render(gs, True, c.BLACK), (c.CENTER_X, 800))
         self.hand_layer.draw(self.background)
         self.field_layer.draw(self.background)
