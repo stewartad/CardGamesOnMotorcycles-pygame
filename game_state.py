@@ -19,6 +19,8 @@ class GameState:
                 self.player.hand.append(self.player.deck.draw_card())
 
     def reset_game(self):
+        self.turn_count = 0
+        self.turn_stack.clear()
         self.player.hand.clear()
         self.player.field.clear()
         self.player.deck.reset()
