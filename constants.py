@@ -90,7 +90,13 @@ BUTTON_H = 50
 BUTTON_COLOR = PINK
 BUTTON_SIZE = 16
 
+# Overlay Dims
+OVER_W = 800
+OVER_H = 600
+OVER_CORNER = (50, 50)
 
+OVER_VIEW_LEFT = 500
+OVER_VIEW_TOP = 50
 
 # Fonts
 F_TIMES = 'Times New Roman'

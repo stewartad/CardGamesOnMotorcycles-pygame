@@ -1,6 +1,3 @@
-import constants as c
-
-
 class Action:
     def __init__(self, name):
         self.name = name
