@@ -221,11 +221,11 @@ class GameUI(State):
         self.player_hand = HandView(20, 20, self.player)
         self.player_field = FieldView(20, 250, self.player)
 
-        draw_b = Button('Draw', 100, 800)
-        phase_b = Button('Next Phase', 250, 800)
+        draw_b = Button('Draw', 100, c.WIN_H - c.BUTTON_H - 50)
+        phase_b = Button('Next Phase', 250, c.WIN_H - c.BUTTON_H - 50)
         #reset_b = Button('Reset', 400, 800)
         #exit_b = Button('Exit', 550, 800)
-        deck_b = Button('View Deck', 700, 800)
+        deck_b = Button('View Deck', 500, c.WIN_H - c.BUTTON_H - 50)
         #disc_b = Button('View Discard', 850, 800)
         self.buttons.add(draw_b, phase_b, deck_b)
 
