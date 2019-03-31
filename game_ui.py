@@ -67,9 +67,11 @@ class State:
         pass
 
     def on_click(self, x, y):
+        print("Check Button Clicks")
         cursor = Cursor(x, y)
         clicked_button = pygame.sprite.spritecollide(cursor, self.buttons, False)
         if clicked_button:
+            print("Button Clicked")
             self.check_button(clicked_button[0])
 
     def on_hover(self, x, y):
@@ -189,25 +191,24 @@ class Menu(State):
 
     def check_button(self, button):
         if button.text.lower() == 'reset':
+            print("cool")
             self.game_state.reset_game()
         elif button.text.lower() == 'exit':
-            pygame.event.post(pygame.QUIT)
-        self.done = True
+            #pygame.event.post(pygame.QUIT)
+            self.quit = True
+            print("nice")
 
     def on_key_down(self, key):
         if key == pygame.K_ESCAPE:
             self.done = True
 
     def draw(self, surface_obj):
+        self.image.fill(c.GRAY)
         self.buttons.draw(self.image)
         surface_obj.blit(self.image, self.rect)
 
     def update(self):
-        self.image.fill(c.GRAY)
         self.buttons.update()
-
-    def on_click(self, x, y):
-        super(Menu, self).on_click(x, y)
 
 class GameUI(State):
     def __init__(self, game_state):
