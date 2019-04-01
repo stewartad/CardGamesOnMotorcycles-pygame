@@ -174,7 +174,7 @@ class GameUI(State):
         self.player_hand.update()
         self.player_field.update()
         self.active_sprites.empty()
-        self.active_sprites.add(self.player_hand.sprites, self.player_field.sprites)
+        self.active_sprites.add(self.player_hand.sprites, self.player_field.sprites_group)
 
     def on_key_down(self, key):
         if key == pygame.K_ESCAPE:
@@ -185,7 +185,7 @@ class GameUI(State):
         cursor = Cursor(x, y)
         clicked_card = pygame.sprite.spritecollide(cursor, self.player_hand.sprites_group, False)
         if clicked_card:
-            self.game_state.receive_action(actions.SummonAction(clicked_card[0].card, self.game_state.player))
+            self.game_state.receive_action(actions.SummonAction(clicked_card[0].card, self.game_state.player, 'top-left'))
         else:
             super(GameUI, self).on_click(x, y)
 

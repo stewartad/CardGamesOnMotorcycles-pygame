@@ -2,7 +2,7 @@ import math
 
 import pygame
 
-import constants
+import constants as c
 from game_ui import State
 from ui_elements import SmallCardSprite
 

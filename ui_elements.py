@@ -91,3 +91,23 @@ class Block(sprite.Sprite):
 
     def draw(self, surface_obj):
         surface_obj.blit(self.image, self.rect)
+
+
+class FieldSlot(sprite.GroupSingle):
+    def __init__(self, x, y):
+        super(FieldSlot, self).__init__()
+        self.x = x
+        self.y = y
+        # self.image = pygame.Surface((c.FIELD_ZONE_W, c.FIELD_ZONE_H))
+        self.rect = pygame.Rect(x, y, c.FIELD_ZONE_W, c.FIELD_ZONE_H)
+        # self.card_sprite = sprite.GroupSingle()
+
+
+    def place_card(self, card_obj):
+        if card_obj is None:
+            return
+        card_sprite = SmallCardSprite(card_obj, self.x + c.FIELD_ZONE_PADDING / 2, self.y + c.FIELD_ZONE_PADDING / 2)
+        self.add(card_sprite)
+
+
+

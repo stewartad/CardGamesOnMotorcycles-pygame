@@ -24,16 +24,17 @@ class DrawAction(Action):
 
 
 class SummonAction(Action):
-    def __init__(self, player_card, player):
+    def __init__(self, player_card, player, location):
         super(SummonAction, self).__init__('summon')
         self.card = player_card
         self.player = player
+        self.location = location
 
     def action(self):
-        self.player.summon(self.card)
+        self.player.summon(self.card, self.location)
 
     def validate(self):
-        if self.player.check_summon():
+        if self.player.check_summon(self.location):
             return True
 
 

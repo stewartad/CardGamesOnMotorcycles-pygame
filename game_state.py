@@ -64,11 +64,37 @@ class Phase:
         self.allowed_actions = list(args)
 
 
+class Field:
+    def __init__(self):
+        self.card_field = {
+            'top-left': None,
+            'top-center': None,
+            'top-right': None,
+            'bot-left': None,
+            'bot-center': None,
+            'bot-right': None
+        }
+
+    def addCard(self, card, location):
+        if(location not in self.card_field.keys()):
+            return
+        self.card_field[location] = card
+
+    def removeCard(self, location):
+        if (location not in self.card_field.keys()):
+            return
+        self.card_field[location] = None
+
+    def clear(self):
+        for key in self.card_field.keys():
+            self.card_field[key] = None
+
+
 class Player:
     def __init__(self, name):
         self.name = name
         self.hand = []
-        self.field = []
+        self.field = Field()
         self.deck = Deck(c.DEFAULT_DECK)
         self.can_draw = True
         self.can_summon = True
@@ -87,24 +113,24 @@ class Player:
     def revoke_summon(self):
         self.can_summon = False
 
-    def check_summon(self):
-        if len(self.field) < c.FIELD_MAX and self.can_summon:
+    def check_summon(self, location):
+        if self.field.card_field[location] == None and self.can_summon:
             return True
         else:
             self.revoke_summon()
             return False
 
-    def summon(self, card):
+    def summon(self, card, location):
         if self.can_summon:
             self.can_summon = False
             self.hand.remove(self.check_hand(card))
-            self.field.append(card)
+            self.field.card_field[location] = card
 
     def check_hand(self, card):
         return next((x for x in self.hand if x.id == card.id), None)
 
     def check_field(self, card):
-        return next((x for x in self.field if x.id == card.id), None)
+        return card in self.field.card_field.values()
 
 
 class Deck:
