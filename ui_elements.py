@@ -80,3 +80,14 @@ class Cursor(sprite.Sprite):
         super(Cursor, self).__init__()
         self.image = pygame.Surface((10, 10))
         self.rect = pygame.Rect(x, y, 10, 10)
+
+
+class Block(sprite.Sprite):
+    def __init__(self, color, x, y, w, h):
+        super(Block, self).__init__()
+        self.image = pygame.Surface((w, h))
+        self.image.fill(color)
+        self.rect = pygame.Rect(x, y, w, h)
+
+    def draw(self, surface_obj):
+        surface_obj.blit(self.image, self.rect)

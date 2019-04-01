@@ -2,11 +2,14 @@ import constants as c
 import pygame
 import pygame.sprite as sprite
 import actions
-from ui_elements import CardSprite, SmallCardSprite, Button, Cursor
+from ui_elements import *
 from pygame.locals import *
 import math
 
-
+# Super class for UI state machine
+# NOTE all state rects must be the same size so that sprite collision works
+# The cursor sprite is created with respect to the window size
+# Any elements must be sprites positioned relative to the parent rect
 class State:
     def __init__(self, game_state):
         self.done = False
@@ -67,11 +70,9 @@ class State:
         pass
 
     def on_click(self, x, y):
-        print("Check Button Clicks")
         cursor = Cursor(x, y)
         clicked_button = pygame.sprite.spritecollide(cursor, self.buttons, False)
         if clicked_button:
-            print("Button Clicked")
             self.check_button(clicked_button[0])
 
     def on_hover(self, x, y):
@@ -177,24 +178,24 @@ class GraveLayer(CardLayer):
         #self.card_list = player.grave
 
 
+# Class for the "pause" menu
 class Menu(State):
     def __init__(self, game_state):
         super(Menu, self).__init__(game_state)
         self.next = 'board'
 
-        self.image = pygame.Surface((150, 150))
-        self.rect = pygame.Rect(c.CENTER_X-75, c.CENTER_Y-75, 150, 150)
+        self.rect = pygame.Rect(0, 0, c.WIN_W, c.WIN_H)
 
-        reset_b = Button('Reset', 25, 25)
-        exit_b = Button('Exit', 25, 85)
+        self.background = Block(c.GRAY, c.CENTER_X - 75, c.CENTER_Y - 75, 150, 150)
+        reset_b = Button('Reset', c.CENTER_X - 50, c.CENTER_Y - 50)
+        exit_b = Button('Exit', c.CENTER_X - 50, c.CENTER_Y + 10)
         self.buttons.add(reset_b, exit_b)
 
     def check_button(self, button):
         if button.text.lower() == 'reset':
-            print("cool")
             self.game_state.reset_game()
+            self.done = True
         elif button.text.lower() == 'exit':
-            #pygame.event.post(pygame.QUIT)
             self.quit = True
             print("nice")
 
@@ -203,12 +204,12 @@ class Menu(State):
             self.done = True
 
     def draw(self, surface_obj):
-        self.image.fill(c.GRAY)
-        self.buttons.draw(self.image)
-        surface_obj.blit(self.image, self.rect)
+        self.background.draw(surface_obj)
+        self.buttons.draw(surface_obj)
 
     def update(self):
         self.buttons.update()
+
 
 class GameUI(State):
     def __init__(self, game_state):
