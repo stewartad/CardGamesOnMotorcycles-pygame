@@ -1,5 +1,7 @@
 # import the pygame module, so you can use it
 import pygame
+
+import card_layer
 import cevent
 import constants as c
 import game_state
@@ -36,7 +38,7 @@ class App(cevent.CEvent):
         # currently the game ui is a state and its time to see if it works
 
         self.state_dict = {'board': game_ui.GameUI(self.current_game),
-                           'deck': game_ui.DeckLayer(self.current_game),
+                           'deck': card_layer.DeckLayer(self.current_game),
                            'pause': game_ui.Menu(self.current_game)}
         self.state_name = 'board'
         self.state = self.state_dict[self.state_name]
