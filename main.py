@@ -31,6 +31,7 @@ class App(cevent.CEvent):
         self.background = pygame.Surface((c.WIN_W, c.WIN_H))
         self.background.fill(c.BG_BLUE)
         self._image_surf = pygame.image.load("logo32x32.png").convert()
+        pygame.display.set_caption('Card Games on Motorcycles')
 
         # Vars to turn this class into a state machine controller
         # This is atrocious and will be rewritten

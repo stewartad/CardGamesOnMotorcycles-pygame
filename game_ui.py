@@ -99,7 +99,7 @@ class Menu(State):
             self.done = True
         elif button.text.lower() == 'exit':
             self.quit = True
-            print("nice")
+            print("Exiting")
 
     def on_key_down(self, key):
         if key == pygame.K_ESCAPE:
