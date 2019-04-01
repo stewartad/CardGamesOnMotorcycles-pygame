@@ -185,7 +185,7 @@ class GameUI(State):
         cursor = Cursor(x, y)
         clicked_card = pygame.sprite.spritecollide(cursor, self.player_hand.sprites_group, False)
         if clicked_card:
-            self.game_state.receive_action(actions.SummonAction(clicked_card[0].card, self.game_state.player, 'top-left'))
+            self.game_state.receive_action(actions.SummonAction(clicked_card[0].card, self.game_state.player, self.player_field.get_location(x, y)))
         else:
             super(GameUI, self).on_click(x, y)
 

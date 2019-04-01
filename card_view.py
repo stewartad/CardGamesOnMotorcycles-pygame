@@ -49,7 +49,11 @@ class FieldView:
 
     def get_location(self, x, y):
         for location in self.field.keys():
-            if self.field[location].rect.collidepoint(x, y):
+            # This code is intended to be used once I figure out how to check for consecutive clicks to choose a location
+            # if self.field[location].rect.collidepoint(x, y):
+            #     return location
+            # for now we'll just search for the next empty location
+            if self.player.field.card_field[location] == None:
                 return location
         return None
 
