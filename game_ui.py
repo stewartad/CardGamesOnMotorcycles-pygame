@@ -21,9 +21,6 @@ class State:
         self.buttons = sprite.Group()
         self.preview = sprite.GroupSingle()
 
-        self.prev_x = c.VIEW_LEFT
-        self.prev_y = c.VIEW_TOP
-
         self.reset = False
         self.quit = False
 
@@ -77,7 +74,7 @@ class State:
         cursor = Cursor(x, y)
         hover_card = pygame.sprite.spritecollide(cursor, self.active_sprites, False)
         if hover_card:
-            self.preview.add(CardSprite(hover_card[0].card, self.prev_x, self.prev_y))
+            self.preview.add(CardSprite(hover_card[0].card, c.VIEW_LEFT, c.VIEW_TOP))
 
 
 # Class for the "pause" menu
@@ -167,7 +164,7 @@ class GameUI(State):
             self.font.render('Turn: {}  {}'.format(self.game_state.turn_count, self.game_state.curr_phase.name),
                              True,
                              c.BLACK),
-            (c.CENTER_X, 50))
+            (c.LABEL_LEFT, c.LABEL_TOP))
         self.buttons.update()
         self.preview.update()
 
