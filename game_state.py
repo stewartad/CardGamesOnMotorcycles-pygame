@@ -114,11 +114,10 @@ class Player:
         self.can_summon = False
 
     def check_summon(self, location):
-        if self.field.card_field[location] == None and self.can_summon:
-            return True
-        else:
-            self.revoke_summon()
-            return False
+        if location in self.field.card_field and self.can_summon:
+            if self.field.card_field[location] is None:
+                return True
+        return False
 
     def summon(self, card, location):
         if self.can_summon:

@@ -54,17 +54,12 @@ class FieldView:
             #     return location
             # for now we'll just search for the next empty location
             if self.player.field.card_field[location] == None:
+                print(location)
                 return location
         return None
 
     def update(self):
         self.sprites_group.empty()
-        # self.sprites.clear()
-        # i = 0
-        # for card in self.player.field.card_field.values():
-        #     self.sprites.append(CardSprite(card, (c.CARD_WIDTH * i) + (i + 1) * c.CARD_GAP, self.rect.y))
-        #     i = i + 1
-        # self.sprites_group.add(self.sprites)
         for location in self.player.field.card_field.keys():
             self.field[location].place_card(self.player.field.card_field[location])
         self.sprites_group.add(self.field.values())
